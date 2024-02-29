@@ -1,9 +1,13 @@
-import React from 'react'
+import Nav from "@/components/ui/Nav";
+import React from "react";
 
 const contact = () => {
   return (
-    <div>contact</div>
-  )
-}
+    <>
+      <Nav />
+      <div className="flex justify-center">contact</div>
+    </>
+  );
+};
 
-export default contact
+export default contact;
