@@ -26,8 +26,26 @@
     rgb(var(--background-start-rgb));
 } */
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+a,
+span,
+li {
+  transition: all 1s var(--elastic-out);
+}
+
+.item{
+  min-height: 30rem;
+  min-width: 20rem;
+  padding: 40px;
+}
+
+.inner-carousel{
+  display: flex;
+  /* background: lightblue; */
+}
+
+.carousel{
+  cursor: grab;
+  overflow: hidden;
+  margin: 30px;
+  /* background: rgb(197, 86, 86); */
 }
