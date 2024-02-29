@@ -2,7 +2,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import {MotionValue, motion, useMotionValue} from "framer-motion";
+import {
+  AnimatePresence,
+  MotionValue,
+  animate,
+  motion,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import SkillSection from "./SkillSection";
+import Slider from "./Slider";
 const Nav = () => {
   const links = [
     {
@@ -28,47 +37,79 @@ const Nav = () => {
     outputLower: number,
     outputUpper: number
   ) => {
-    const INPUT_RANGE = inputUpper - inputLower
-    const OUTPUT_RANGE = outputUpper - outputLower
+    const INPUT_RANGE = inputUpper - inputLower;
+    const OUTPUT_RANGE = outputUpper - outputLower;
 
     return (value: number) =>
-      outputLower + (((value - inputLower) / INPUT_RANGE) * OUTPUT_RANGE || 0)
-  }
+      outputLower + (((value - inputLower) / INPUT_RANGE) * OUTPUT_RANGE || 0);
+  };
 
-
-  const setTransform = (item: HTMLElement & EventTarget, event:React.PointerEvent, x: MotionValue, y: MotionValue ) => {
+  const setTransform = (
+    item: HTMLElement & EventTarget,
+    event: React.PointerEvent,
+    x: MotionValue,
+    y: MotionValue
+  ) => {
     const bounds = item.getBoundingClientRect();
-    const relativeX = event.clientX - bounds.left
-    const relativeY = event.clientY - bounds.top
-    const xRange = mapRange(0, bounds.width, -1, 1)(relativeX)
-    const yRange = mapRange(0, bounds.width, -1, 1)(relativeY)
-    x.set(xRange * 10)
-    y.set(yRange * 10)    
+    const relativeX = event.clientX - bounds.left;
+    const relativeY = event.clientY - bounds.top;
+    const xRange = mapRange(0, bounds.width, -1, 1)(relativeX);
+    const yRange = mapRange(0, bounds.height, -1, 1)(relativeY);
+    x.set(xRange * 10);
+    y.set(yRange * 10);
+    console.log(xRange, yRange, "x value and y value");
+  };
 
-  }
   return (
-    <nav className="p-8">
-      <ul className="flex gap-12">
-        {links.map((link) => {
-            const x = useMotionValue(0);
-            const y = useMotionValue(0);
-          return (
-            <motion.li onPointerMove={(event) => {
-                const item = event.currentTarget ;
-                setTransform(item, event, x, y)
-            }} 
-            key={link.path}
-            style={{x, y }}>
-              <MotionLink
-               className="font-medium rounded-md text-sm py-2 px-4 transition-all duration-500 ease-out hover:bg-slate-200"
-               href={link.path}>
-                <span>{link.name}</span>
-              </MotionLink>
-            </motion.li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      <nav className="p-8">
+        <ul className="flex gap-12">
+          <AnimatePresence>
+            {links.map((link) => {
+              const x = useMotionValue(0);
+              const y = useMotionValue(0);
+              const textX = useTransform(x, (latest) => latest * 0.5);
+              const textY = useTransform(y, (latest) => latest * 0.5);
+              return (
+                <motion.li
+                  onPointerMove={(event) => {
+                    const item = event.currentTarget;
+                    setTransform(item, event, x, y);
+                  }}
+                  key={link.path}
+                  onPointerLeave={(event) => {
+                    x.set(0);
+                    y.set(0);
+                  }}
+                  style={{ x, y }}
+                >
+                  <MotionLink
+                    className="font-medium relative rounded-md text-sm py-2 px-4 transition-all duration-500 ease-out hover:bg-slate-200"
+                    href={link.path}
+                  >
+                    <motion.span
+                      style={{ x: textX, y: textY }}
+                      className="z-10 relative"
+                    >
+                      {link.name}
+                    </motion.span>
+                    {pathname === link.path ? (
+                      <motion.div
+                        transition={{ type: "spring" }}
+                        layoutId="underline"
+                        className="absolute w-full h-full rounded-md left-0 bottom-0 bg-blue-300"
+                      ></motion.div>
+                    ) : null}
+                  </MotionLink>
+                </motion.li>
+              );
+            })}
+          </AnimatePresence>
+        </ul>
+      </nav>
+     <SkillSection/>
+     <Slider/>
+    </>
   );
 };
 
