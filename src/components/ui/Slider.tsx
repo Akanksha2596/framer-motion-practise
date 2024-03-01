@@ -4,7 +4,8 @@ import Image from "next/image";
 import images from "@/images";
 
 const Slider = () => {
-//   console.log(images);
+//   console.log(images);   better comments how  to use 
+
   const [width, setWidth] = useState(0);
   const carousel = useRef<HTMLDivElement>(null);
 
